@@ -356,7 +356,7 @@ with tab2:
             func =  all_functions[func_name]
     # if function_choice:
     #     func = all_functions[function_choice_list[0]]
-            st.set_option('deprecation.showPyplotGlobalUse', False) 
+            # st.set_option('deprecation.showPyplotGlobalUse', False) 
             # figure_func = function_choice[0]
             fig = func(file_path_scen,file_path_ref, run_name_scen,run_name_ref,output_folder)
             # for f in fig:
