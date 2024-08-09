@@ -5,3 +5,4 @@ importlib
 matplotlib
 geopandas
 seaborn
+pandas==2.2.2
