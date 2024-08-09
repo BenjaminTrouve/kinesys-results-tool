@@ -4,3 +4,4 @@ nbformat
 importlib
 matplotlib
 geopandas
+seaborn
