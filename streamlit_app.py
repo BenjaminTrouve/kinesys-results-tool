@@ -306,7 +306,7 @@ with tab2:
 
     if input_path and output_path and date_ref_ddmm and date_scen_ddmm:
         run_name_ref, run_name_scen, file_path_ref, file_path_scen, output_folder = scenario_param(date_ref_ddmm,date_scen_ddmm,input_path,output_path)
-
+        st.write([file_path_ref,file_path_scen])
 
 
     # folder_path = r'C:\Users\trouvebe\Desktop\Thesis\Chapter 1\Python functions\Kinesys post-processing\Analysis'
