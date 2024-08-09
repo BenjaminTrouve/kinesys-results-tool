@@ -1,7 +1,6 @@
 streamlit
 nbconvert
 nbformat
-glob
 importlib
 matplotlib
 requests
