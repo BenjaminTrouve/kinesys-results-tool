@@ -349,8 +349,9 @@ with tab2:
     function_choice = st.multiselect('Choose your figures:', process_string_list(all_functions.keys()))
 
     function_choice_list = inverse_process_string_list(function_choice)
-
+    
     if st.button("Run Selected Functions"):
+        st.write(function_choice_list)
         for func_name in function_choice_list:
             func =  all_functions[func_name]
     # if function_choice:
