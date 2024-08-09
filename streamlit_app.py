@@ -186,7 +186,7 @@ with tab1:
         file_path = directory + '/' + filename
         # st.write(file_path)
 
-        folder_url_csv = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/VD%20to%20csv'
+        folder_url_csv = 'https://github.com/BenjaminTrouve/kinesys-results-tool/tree/main/VD%20to%20csv'
         function_to_csv  = get_python_files_from_github_folder(folder_url_csv)
         # ipynb_files = glob.glob(os.path.join(folder_path_csv, '*.ipynb'))
         # ipynb_file_names = [os.path.basename(file) for file in ipynb_files]
@@ -308,7 +308,7 @@ with tab2:
     #     functions = import_functions_from_script(script_path)
     #     all_functions.update(functions)
 
-    folder_url = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/Analysis'
+    folder_url = 'https://github.com/BenjaminTrouve/kinesys-results-tool/tree/main/main/Analysis'
     all_functions  = get_python_files_from_github_folder(folder_url)
 
     def process_string_list(input_list):
