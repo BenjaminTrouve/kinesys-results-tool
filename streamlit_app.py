@@ -74,58 +74,76 @@ def inverse_process_string_list(input_list):
             processed_list.append(reconstructed_string)
         return processed_list
 
-def get_python_files_from_github_folder(folder_url):
-    """Retrieve and execute .py files from a GitHub folder."""
-    # Extract the API URL to list contents of the folder
-    folder_api_url = folder_url.replace('https://github.com/', 'https://api.github.com/repos/')
-    folder_api_url = folder_api_url.replace('tree/main/', 'contents/')
+# def get_python_files_from_github_folder(folder_url):
+#     """Retrieve and execute .py files from a GitHub folder."""
+#     # Extract the API URL to list contents of the folder
+#     folder_api_url = folder_url.replace('https://github.com/', 'https://api.github.com/repos/')
+#     folder_api_url = folder_api_url.replace('tree/main/', 'contents/')
 
-    # Get the list of files in the folder
-    response = requests.get(folder_api_url)
+#     # Get the list of files in the folder
+#     response = requests.get(folder_api_url)
     
-    if response.status_code != 200:
-        raise Exception(f"Failed to retrieve folder contents: {response.status_code}")
+#     if response.status_code != 200:
+#         raise Exception(f"Failed to retrieve folder contents: {response.status_code}")
 
-    contents = response.json()
+#     contents = response.json()
     
-    # Filter out .py files
-    py_files = [item for item in contents if item['name'].endswith('.py') and item['type'] == 'file']
+#     # Filter out .py files
+#     py_files = [item for item in contents if item['name'].endswith('.py') and item['type'] == 'file']
 
-    if not py_files:
-        raise Exception("No Python (.py) files found in the folder.")
+#     if not py_files:
+#         raise Exception("No Python (.py) files found in the folder.")
     
-    # Process each .py file
-    all_functions = {}
-    for file_info in py_files:
-        file_url = file_info['download_url']
-        # print(file_url)  # Direct URL to the raw file content
-        # print(f"Processing file: {file_info['name']}")
-        f = import_functions_from_github(file_url)
-        all_functions.update(f)
-    return all_functions
+#     # Process each .py file
+#     all_functions = {}
+#     for file_info in py_files:
+#         file_url = file_info['download_url']
+#         # print(file_url)  # Direct URL to the raw file content
+#         # print(f"Processing file: {file_info['name']}")
+#         f = import_functions_from_github(file_url)
+#         all_functions.update(f)
+#     return all_functions
 
-def import_functions_from_github(file_url):
-    """Import functions starting with 'func_' from a Python script on GitHub."""
-    # Fetch the script content from GitHub
-    response = requests.get(file_url)
+# def import_functions_from_github(file_url):
+#     """Import functions starting with 'func_' from a Python script on GitHub."""
+#     # Fetch the script content from GitHub
+#     response = requests.get(file_url)
     
-    if response.status_code != 200:
-        raise Exception(f"Failed to download script: {response.status_code}")
+#     if response.status_code != 200:
+#         raise Exception(f"Failed to download script: {response.status_code}")
     
-    script_content = response.text
+#     script_content = response.text
 
-    # Create a temporary module
-    module_name = os.path.splitext(os.path.basename(file_url))[0]
-    spec = importlib.util.spec_from_loader(module_name, loader=None)
-    module = importlib.util.module_from_spec(spec)
+#     # Create a temporary module
+#     module_name = os.path.splitext(os.path.basename(file_url))[0]
+#     spec = importlib.util.spec_from_loader(module_name, loader=None)
+#     module = importlib.util.module_from_spec(spec)
     
-    # Execute the script content within this module
-    exec(script_content, module.__dict__)
+#     # Execute the script content within this module
+#     exec(script_content, module.__dict__)
     
-    # Import and return all functions starting with 'func_'
-    functions = {name: obj for name, obj in module.__dict__.items() if callable(obj) and name.startswith('func_')}
-    # print(functions)
-    return functions
+#     # Import and return all functions starting with 'func_'
+#     functions = {name: obj for name, obj in module.__dict__.items() if callable(obj) and name.startswith('func_')}
+#     # print(functions)
+#     return functions
+
+
+def import_all_functions_from_directory(directory):
+    functions_dict = {}
+    for filename in os.listdir(directory):
+        if filename.endswith(".py") and filename != "__init__.py":
+            module_name = filename[:-3]  # Remove the .py extension
+            file_path = os.path.join(directory, filename)
+
+            # Dynamically load the module
+            spec = importlib.util.spec_from_file_location(module_name, file_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            # Get all functions from the module and add them to the dictionary
+            functions_dict.update({name: func for name, func in inspect.getmembers(module, inspect.isfunction)})
+
+    return functions_dict
 
 ####################################
 ################################
@@ -186,8 +204,8 @@ with tab1:
         file_path = directory + '/' + filename
         # st.write(file_path)
 
-        folder_url_csv = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/VD%20to%20csv'
-        function_to_csv  = get_python_files_from_github_folder(folder_url_csv)
+        # folder_url_csv = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/VD%20to%20csv'
+        # function_to_csv  = get_python_files_from_github_folder(folder_url_csv)
         # ipynb_files = glob.glob(os.path.join(folder_path_csv, '*.ipynb'))
         # ipynb_file_names = [os.path.basename(file) for file in ipynb_files]
 
@@ -198,6 +216,9 @@ with tab1:
         #     # convert_notebook_to_script(notebook_path, script_path)
         #     # function_vd_csv = import_functions_from_script(script_path)
 
+        modules_directory = os.path.join(os.path.dirname(__file__), 'VD to csv')
+        functions_to_csv = import_all_functions_from_directory(modules_directory)
+        
         str_keys = [str(key) for key in function_to_csv.keys()]
         function_to_call =  function_to_csv[str_keys[0]]
         function_to_call(file_path,output_data_in)
@@ -308,8 +329,8 @@ with tab2:
     #     functions = import_functions_from_script(script_path)
     #     all_functions.update(functions)
 
-    folder_url = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/Analysis'
-    all_functions  = get_python_files_from_github_folder(folder_url)
+    # folder_url = 'https://github.com/BenjaminTrouve/Kinesys_functions/tree/main/Analysis'
+    # all_functions  = get_python_files_from_github_folder(folder_url)
 
     def process_string_list(input_list):
         processed_list = []
@@ -319,7 +340,9 @@ with tab2:
             result_string = ' '.join(filtered_substrings)
             processed_list.append(result_string)
         return processed_list
-
+        
+    modules_directory = os.path.join(os.path.dirname(__file__), 'Analysis')
+    all_functions = import_all_functions_from_directory(modules_directory)
 
     # st.sidebar.title('Figure selection')
     function_choice = st.multiselect('Choose your figures:', process_string_list(all_functions.keys()))
