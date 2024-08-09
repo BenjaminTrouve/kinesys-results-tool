@@ -308,7 +308,7 @@ with tab2:
     #     functions = import_functions_from_script(script_path)
     #     all_functions.update(functions)
 
-    folder_url = 'https://github.com/BenjaminTrouve/kinesys-results-tool/tree/main/main/Analysis'
+    folder_url = 'https://github.com/BenjaminTrouve/kinesys-results-tool/tree/main/Analysis'
     all_functions  = get_python_files_from_github_folder(folder_url)
 
     def process_string_list(input_list):
