@@ -3,5 +3,4 @@ nbconvert
 nbformat
 importlib
 matplotlib
-requests
-json
+
