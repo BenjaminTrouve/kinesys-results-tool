@@ -352,6 +352,7 @@ with tab2:
     
     if st.button("Run Selected Functions"):
         st.write(function_choice_list)
+        st.write([run_name_ref, run_name_scen, file_path_ref, file_path_scen])
         for func_name in function_choice_list:
             func =  all_functions[func_name]
     # if function_choice:
